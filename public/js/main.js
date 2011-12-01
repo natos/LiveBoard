@@ -4,10 +4,49 @@
 
 var o = {
 	socket: io.connect('http://localhost')
+,	events: _.extend({}, Backbone.Events)
 ,	pointers: {}
-,	peons: {}
-
+,	cards: {}
+,	'last-z-index': 0
 };
+
+/**
+ *	Utils
+ */
+
+o.id = function() { 
+	return Math.floor(Math.random()*16777215).toString(16); 
+}
+
+o.getLastZIndex = function() { 
+	return o['last-z-index']++
+}
+
+o.getMousePosition = function(e) {
+
+	// From http://www.quirksmode.org/js/events_properties.html
+
+	var posx = 0;
+	var posy = 0;
+
+	if (!e) var e = window.event;
+
+	if (e.pageX || e.pageY) {
+		posx = e.pageX;
+		posy = e.pageY;
+	}
+	else if (e.clientX || e.clientY) {
+		posx = e.clientX + document.body.scrollLeft
+			+ document.documentElement.scrollLeft;
+		posy = e.clientY + document.body.scrollTop
+			+ document.documentElement.scrollTop;
+	}
+
+	return { 
+		posx: posx,
+		posy: posy
+	}
+}
 
 /**
 *	Require config
@@ -23,10 +62,22 @@ require.config({
 
 require([
 	
+	'routers/LiveBoardRouter'
+
 ],
 
-function(){
+function(Router){
 
-	
+	// Router initialization
+	o.router = new Router();
+	// Navigate to Now And Next by default
+	if ( !(/#/).test(window.location.toString()) ) {
+		o.router.navigate('board');
+	}
+
+	// Initializate history managment
+	Backbone.emulateHTTP = true;
+	Backbone.emulateJSON = true;
+	Backbone.history.start();
 
 });

@@ -7,11 +7,9 @@ var fs = require('fs'),
 /**
 * app & basic data
 */
-var http = require('http'),
-	client = http.createClient(3000, 'localhost'),
-	app = express.createServer(),
+var app = express.createServer(),
 	data = { 
-		title: 'Observer', 
+		title: 'LiveBoard', 
 		urls: [],
 		results: []
 	 };
