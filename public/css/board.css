@@ -11,113 +11,16 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 body {
 	font-size: 13px;
 	font-family: Arial, Helvetica, sans-serif;
-}
-
-/**
-*	Interactive things
-*/
-
-.pointer {
-	border-radius: 20px;
-	-webkit-transition-property: width, height;  
-	-webkit-transition-duration: .05s;
-}
-
-@-webkit-keyframes openCard {  
-
-	from {
-    	-webkit-transform: perspective(400px) rotateY(0deg);
-	}  
-
-	to {  
-		-webkit-transform: perspective(400px) rotateY(180deg) scale(5, 6);
-    }  
-} 
-
-.card {
-	width: 130px;
-	height: 90px;
-	background: #FFEE99;
-	border: .1em solid #FFDD33;
-	margin: .5em;
-	padding: .5em;
-	position: absolute;
-
-	cursor: move;
-
-	-webkit-border-radius: 2px;
-	-moz-border-radius: 2px;
-	border-radius: 2px;
-
-	-webkit-box-shadow: 2px 2px 1px #DDD;
-	-moz-box-shadow: 2px 2px 1px #DDD;
-	box-shadow: 2px 2px 1px #DDD;
-
-	opacity: .8;
-
-	-webkit-transition: all .3s ease-out;
-}
-
-.card:hover, .card.focus {
-	opacity: .9;
-	border: .1em solid #FFCC66;
-}
-
-.card.edit-mode {
-	opacity: .9;
-	cursor: default;
-	-webkit-transition: all .3s ease-out;
-}
-
-.card:hover .remove {
-	display: block;
-}
-
-.card .remove {
-	font-size: .8em;
-	width: 1em;
-	height: 1em;
-	line-height: 0;
-	padding: .8em 1.1em .8em .5em;
-	opacity: .7;
-	display: none;
-}
-
-.card .menu {
-	float: right;
-}
-
-textarea {
-	font-size: 2em;
-	border: .1em solid #FFDD33;
-	width: 90%;
-}
-
-textarea:hover {
-
-}
-
-
-/**
-*	Layout
-*/
-
-#live-board {
-	position: relative;
-	background: #eee;
-	margin: .5em;
-	padding: .5em;
-	border: .1em solid #ccc;
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-
+	
 	-moz-user-select: -moz-none;
 	-khtml-user-select: none;
 	-webkit-user-select: none;
 	user-select: none;
+}
+
+h1 {
+	font-size: 1.8em;
+	line-height: .85em;
 }
 
 button {
@@ -167,4 +70,140 @@ button:active {
 	-ms-box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
 	-o-box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
 	box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee; 
+}
+
+/**
+*	Interactive things
+*/
+
+.pointer {
+	border-radius: 20px;
+	-webkit-transition-property: width, height;  
+	-webkit-transition-duration: .05s;
+}
+
+@-webkit-keyframes openCard {  
+
+	from {
+    	-webkit-transform: perspective(400px) rotateY(0deg);
+	}  
+
+	to {  
+		-webkit-transform: perspective(400px) rotateY(180deg) scale(5, 6);
+    }  
+} 
+
+.card {
+	width: 160px;
+	height: 110px;
+	background: #FFEE99;
+	border: .1em solid #FFDD33;
+	margin: .5em;
+	padding: .5em;
+	position: absolute;
+
+	cursor: move;
+
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+
+	-webkit-box-shadow: 2px 2px 1px #DDD;
+	-moz-box-shadow: 2px 2px 1px #DDD;
+	box-shadow: 2px 2px 1px #DDD;
+
+	opacity: .8;
+
+	-webkit-transition: all .3s ease-out;
+}
+
+.card.focus {
+	width: 170px;
+	height: 120px;
+	
+	-webkit-box-shadow: -2px 2px -1px #CCC;
+/*	-moz-box-shadow: 3px 3px 2px #DDD;
+	box-shadow: 3px 3px 2px #DDD; */
+
+	-webkit-transition: all .1s ease-out;	
+	-webkit-transform: rotate(-3deg)!important;
+}
+
+.card:hover, .card.focus {
+	opacity: .9;
+	border: .1em solid #FFCC66;
+}
+
+.card.edit-mode {
+	opacity: .9;
+	cursor: default;
+	-webkit-transition: all .3s ease-out;
+}
+
+.card:hover .remove {
+	display: block;
+}
+
+.card .remove {
+	font-size: .8em;
+	width: 1em;
+	height: 1em;
+	line-height: 0;
+	padding: .8em 1.1em .8em .5em;
+	opacity: .7;
+	display: none;
+}
+
+.card .menu {
+	float: right;
+}
+
+textarea, input {
+	font-size: 2em;
+	border: .1em solid #FFDD33;
+	width: 90%;
+}
+
+textarea:hover {
+
+}
+
+
+/**
+*	Layout
+*/
+
+header {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	color: #999;
+	padding: 2px;
+	margin: 5px;
+	text-align: center;
+}
+
+footer {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	color: #777;
+	padding: 2px;
+	margin: 5px;
+	text-align: center;
+}
+
+#live-board {
+	position: relative;
+	background: #eee;
+	margin: .5em;
+	padding: .5em;
+	border: .1em solid #ccc;
+	position: absolute;
+	top: 25px; /* header */
+	left: 0;
+	right: 0;
+	bottom: 20px; /* footer */
 }

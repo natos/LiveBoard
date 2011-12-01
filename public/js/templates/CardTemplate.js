@@ -1,5 +1,5 @@
 /**
-*	LiveBoardTemplate.js
+*	CardTemplate.js
 */
 
 define([], function(){

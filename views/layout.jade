@@ -7,14 +7,13 @@ html(lang='en')
 
 		link(href='/css/board.css', rel='stylesheet')
 
-	body
 	body!= body
+	
+		script(src="js/libs/jquery/jquery.js")
+		script(src="js/libs/backbone/underscore.js")
+		script(src="js/libs/backbone/backbone.js")
+		script(src="js/libs/socket/socket.io.js")
+		script(src="js/libs/require/require.js", data-main="js/main")
 
-	script(src="js/libs/jquery/jquery.js")
-	script(src="js/libs/backbone/underscore.js")
-	script(src="js/libs/backbone/backbone.js")
-	script(src="js/libs/socket/socket.io.js")
-	script(src="js/libs/require/require.js", data-main="js/main")
-
-	script
-		var client_ip = "#{ip}";
+		script
+			var client_ip = "#{ip}";

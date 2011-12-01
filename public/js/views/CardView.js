@@ -5,10 +5,13 @@
 define([
 
 	'templates/CardTemplate'
+,	'models/CardModel'
+,	'views/EditCardView'
+
 
 ],
 
-function(template) {
+function(template, model, EditCardView) {
 
 /**
 *	Private scope
@@ -31,8 +34,8 @@ function(template) {
 		_defaultPoints.left -= 10;
 	}
 
-	var _getRandomRotation = function() {
-		return Math.floor(Math.random()*6) - 3; 
+	var _getRandomNumber = function(n1, n2) {
+		return Math.floor(Math.random()*n1) - n2; 
 	}
 
 /**
@@ -62,7 +65,7 @@ function(template) {
 
 			this.id = id || 'card' + o.id();
 
-			this.rotation = _getRandomRotation();
+			this.model = new model();
 
 			this.card = $(this.el);
 
@@ -78,10 +81,10 @@ function(template) {
 
 			this.card
 				.css( _getPoints() )
-				.append( this.template() )
+				.append( this.template( this.model ) )
 
-			this.setRotation()
-			
+			this.setRotation( this.getRotation() )
+
 			this.container = this.card.find('.content');
 
 			this.board.append( this.card );
@@ -105,8 +108,12 @@ function(template) {
 *	UI Methods
 */
 
-,		setRotation: function() {
-			this.card[0].style.webkitTransform = 'rotate(' + this.rotation + 'deg)';
+,		getRotation: function() {
+			return this.rotation = _getRandomNumber(6, 3);
+		}
+
+,		setRotation: function( rotation ) {
+			this.card[0].style.webkitTransform = 'rotate(' + rotation + 'deg)';
 		}
 
 ,		focus: function() {
@@ -170,8 +177,6 @@ function(template) {
 			,	left: event.pageX - cardOffset.left
 			}
 
-			this.card.css('-webkit-transition','none');
-
 		}
 
 ,		stopDrag: function(event) {
@@ -179,6 +184,8 @@ function(template) {
 			if (this.editMode) { return }
 
 			this.dragStatus = false;
+			
+			this.blur();
 
 		}
 
@@ -187,6 +194,8 @@ function(template) {
 			if (this.editMode) { return }
 
 			if ( !this.dragStatus ) { return }
+
+			this.card.css('-webkit-transition','none');
 
 			var mouse = o.getMousePosition(event)
 			,	width = this.card.width()
@@ -251,14 +260,11 @@ function(template) {
 				,	'height': height + 'px'
 				});
 
-			this.focus();
-
 			// Content
-			this.container.html('');
-
-			//Add templating
-			$('<textarea class="editor" rows="10">' + this.content + '</textarea>').appendTo(this.container);
-
+			this.editView = this.editView || new EditCardView({ model: this.model, container: this.container });
+			
+			this.editView.render();
+			
 		}
 
 ,		exitEditMode: function(){
@@ -272,14 +278,8 @@ function(template) {
 			this.blur();
 
 			// Content
+			this.editView.remove();
 
-			this.content = $('.editor').val();
-
-			console.log($('.editor').val())
-
-			this.container.html( this.content );
-
-			console.log(this.content);
 		} 
 
 	});
