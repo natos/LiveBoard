@@ -19,7 +19,7 @@ function(template, CardView, CardCollection) {
 ,		template: _.template( template )
 
 ,		events: {
-			'click #btn-new-card'		: 'new-card-handler'
+			'dblclick'					: 'new-card-handler'
 		,	'mousemove'					: 'moving-cursor-handler'
 		}
 
@@ -30,8 +30,6 @@ function(template, CardView, CardCollection) {
 			this.render();
 
 			this.trigger('view-initialized', this);
-
-			this['new-card-handler']();
 
 		}
 
@@ -47,7 +45,14 @@ function(template, CardView, CardCollection) {
 
 ,		'new-card-handler': function(event) {
 
-			var card = new CardView();
+			var offset = this.el.offset();
+
+			var _click = {
+				top: event.pageY - offset.top
+			,	left: event.pageX - offset.left
+			}
+
+			var card = new CardView( _click );
 
 			this.cards.add( card );
 

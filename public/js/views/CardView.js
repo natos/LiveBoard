@@ -17,23 +17,6 @@ function(template, model, EditCardView) {
 *	Private scope
 */
 
-	var _defaultPoints = {
-		top: 10
-	,	left: 10
-	}
-
-	var _getPoints = function() {
-		return {
-			top: (_defaultPoints.top += 10) + 'px'
-		,	left: (_defaultPoints.left += 10) + 'px'
-		}
-	}
-
-	var _resetPoints = function() {
-		_defaultPoints.top -= 10;
-		_defaultPoints.left -= 10;
-	}
-
 	var _getRandomNumber = function(n1, n2) {
 		return Math.floor(Math.random()*n1) - n2; 
 	}
@@ -54,18 +37,26 @@ function(template, model, EditCardView) {
 
 ,		events: {
 		    'dblclick'					: 'edit'
+		,	'mousedown .remove'	 		: 'remove'
 		,	'mousedown'					: 'startDrag'
 		,	'mouseup'					: 'stopDrag'
-		,	'mouseout'					: 'stopDrag'
+//		,	'mouseout'					: 'stopDrag'
 		,	'mousemove'					: 'drag'
-		,	'mouseup .remove'	 		: 'remove'
 		}
 
-,		initialize: function(id) {
+,		initialize: function( position ) {
 
-			this.id = id || 'card' + o.id();
+			this.id = 'card' + o.id();
 
-			this.model = new model();
+			this.model = new model({
+				id: this.id
+			,	title: 'New card ;)'
+			,	description: 'You can drag me around or double click to edit me!'
+			});
+
+			this.model.bind('change', this.redraw, this)
+
+			this.position = position;
 
 			this.card = $(this.el);
 
@@ -79,17 +70,27 @@ function(template, model, EditCardView) {
 
 ,		render: function() {
 
-			this.card
-				.css( _getPoints() )
-				.append( this.template( this.model ) )
+			this.setRotation();
 
-			this.setRotation( this.getRotation() )
+			this.card.css({ 
+				top: this.position.top - 55
+			,	left: this.position.left - 80
+			,	zIndex: o.getLastZIndex()
+			});
 
-			this.container = this.card.find('.content');
-
+			this.redraw();
+					
 			this.board.append( this.card );
-
+			
 			return this;
+
+		}
+		
+,		redraw: function(event) {
+
+			this.card.html( this.template( { model: this.model } ) )
+
+			this.editMode && this.exitEditMode();
 
 		}
 
@@ -97,12 +98,11 @@ function(template, model, EditCardView) {
 *	Properties
 */
 
-,		content: 'Double click to edit ;)'
-
 ,		dragStatus: false
 
-,		oldZIndex: 0
+,		editMode: false
 
+,		oldZIndex: 0
 
 /**
 *	UI Methods
@@ -113,12 +113,10 @@ function(template, model, EditCardView) {
 		}
 
 ,		setRotation: function( rotation ) {
-			this.card[0].style.webkitTransform = 'rotate(' + rotation + 'deg)';
+			this.card[0].style.webkitTransform = 'rotate(' + this.getRotation() + 'deg)';
 		}
 
 ,		focus: function() {
-
-			this.oldZIndex = this.card.css('zIndex') || 0;
 
 			$('.card').removeClass('focus');
 
@@ -126,17 +124,12 @@ function(template, model, EditCardView) {
 				.css({ zIndex: o.getLastZIndex() })
 				.addClass('focus');
 
-			this.trigger('card:focus', this); // not working :S
-
 		}
 
 ,		blur: function() {
 
-			this.card
-				.css({ zIndex: this.oldZIndex })
-				.removeClass('focus');
-
-			this.setRotation();
+			this.card.removeClass('focus');
+			
 		}
 
 /**
@@ -144,8 +137,9 @@ function(template, model, EditCardView) {
 */
 
 ,		remove: function(event) {
-
-			this.dragStatus = false;
+	
+			// avoid dragging things around on removing
+			event.stopPropagation && event.stopPropagation()
 
 		    this.card.undelegate('dblclick', 'editMode');
 			this.card.undelegate('mousedown', 'startDrag');
@@ -154,11 +148,8 @@ function(template, model, EditCardView) {
 			this.card.undelegate('mousemove', 'drag');
 			this.card.undelegate('click button.remove', 'remove');
 
-			this.card.remove();
-
-			this.trigger('card:removed', this); // not working :S
-
-			_resetPoints();
+			this.card[0].style.webkitTransform = 'scale(.3)';
+			this.card.fadeOut(200, function(){ $(this).remove() });
 
 		}
 
@@ -169,6 +160,8 @@ function(template, model, EditCardView) {
 			this.dragStatus = true;
 
 			this.focus();
+			
+			this.card.addClass('dragging');
 
 			var cardOffset = this.card.offset();
 
@@ -182,25 +175,26 @@ function(template, model, EditCardView) {
 ,		stopDrag: function(event) {
 
 			if (this.editMode) { return }
-
+			
 			this.dragStatus = false;
 			
 			this.blur();
+
+			this.card.removeClass('dragging');
+			
+			this.setRotation();
 
 		}
 
 ,		drag: function(event) {
 
 			if (this.editMode) { return }
-
+			
 			if ( !this.dragStatus ) { return }
 
 			this.card.css('-webkit-transition','none');
 
-			var mouse = o.getMousePosition(event)
-			,	width = this.card.width()
-			,	height = this.card.height()
-			,	boardOffset = this.board.offset();
+			var boardOffset = this.board.offset();
 
 			var points = {
 				top: event.pageY - boardOffset.top - this._click.top
@@ -216,20 +210,18 @@ function(template, model, EditCardView) {
 
 ,		edit: function(event) {
 
-			console.log(event.target)
-			console.log(event.target === this.container)
+			// avoid bubble, otherwise the board will be creating a new card
+			event.stopPropagation && event.stopPropagation();
+
+			this.dragStatus = false;
+
+			// avoid edit mode if the target is a form element
+			if ( /INPUT|TEXTAREA/.test(event.target.tagName) ) { return }
 
 			this.card.toggleClass('edit-mode');
-
-			if ( this.card.hasClass('edit-mode') ) {
-
-				this.enterEditMode();
-
-			} else {
-
-				this.exitEditMode();
-
-			}
+			
+			(this.editMode) ? this.exitEditMode() : this.enterEditMode() ;
+			
 		}
 
 ,		enterEditMode: function(){
@@ -260,25 +252,36 @@ function(template, model, EditCardView) {
 				,	'height': height + 'px'
 				});
 
+			this.focus();
+
 			// Content
-			this.editView = this.editView || new EditCardView({ model: this.model, container: this.container });
+			var self = {
+				card		: this.card
+			,	model		: this.model
+			}
+			
+			this.editView = this.editView || new EditCardView( self );
 			
 			this.editView.render();
-			
+						
 		}
 
 ,		exitEditMode: function(){
 
 			this.editMode = false;
 
+			this.card.removeClass('edit-mode')
+
+			// EditView
+			this.editView.remove();
+			
 			this.card
 				.removeAttr('style')
 				.css(this.oldCSS);
 
 			this.blur();
 
-			// Content
-			this.editView.remove();
+			this.setRotation();
 
 		} 
 

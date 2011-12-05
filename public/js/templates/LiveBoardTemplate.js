@@ -4,9 +4,9 @@
 
 define([], function(){
 
-var t = '<div id="menu">'
-	+ '<button id="btn-new-card">+</button>'
-	+ '</div>'
+var t = '<p id="placeholder">'
+	+ 'double click to create a new card'
+	+ '</p>'
 
 	return t;
 

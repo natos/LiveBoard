@@ -4,11 +4,9 @@
 
 define([
 
-	'templates/EditCardTemplate'
-
 ],
 
-function(template) {
+function() {
 
 /**
 *	Private scope
@@ -20,23 +18,11 @@ function(template) {
 
 	return Backbone.View.extend({
 
-		tagName: 'div'
+		initialize: function(self) {
 
-,		className: 'edit-card-view'
+			this.el = self.card;
 
-,		template: _.template( template )
-
-,		events: {
-		    'submit form'		: 'save'
-		}
-
-,		initialize: function(conf) {
-
-			this.el = $(this.el);
-			
-			this.container = conf.container || this.container;
-
-			this.model = conf.model || this.model || [];
+			this.model = self.model;
 
 			this.trigger('view-initialized', this);
 
@@ -44,12 +30,7 @@ function(template) {
 
 ,		render: function() {
 
-			this.el.html( this.template( this.model ) )
-
-			this.container
-				.append( this.el )
-				.hide()
-				.fadeIn(300);
+			this.el.find('.editable').bind('click', this.edit)
 
 			return this;
 
@@ -57,7 +38,9 @@ function(template) {
 
 ,		remove: function() {
 
-			this.el.detach();
+			this.el.find('.editable').unbind('click', this.edit)
+
+			return this;
 
 		}
 /**
@@ -74,19 +57,62 @@ function(template) {
 
 ,		save: function(event) {
 
-			console.log(event);
-
-			if (event.preventDefault) { event.preventDefault() }
-			
-			console.log(this.model)
-			
+			event.preventDefault && event.preventDefault();
+						
 			this.model.set({
 				title: $('#title').val()
 			,	description: $('#description').val()
-			})
+			});
 
 		}
+
+,		edit: function(event) {
+
+			var tag, element, value, template, getdata, data;
+
+				element = $(event.target);
+				tag = element.attr('data-edit-tag');
+				value = element.html();
+				getdata = function(e){
+					return e.val();
+				}
+
+			switch(tag) {
+			
+				case 'input':
+
+					template = $('<input type="text" id="title" data-field="title" placeholder="Write the title here..." value="' + value + '" />');
+
+					break;
+					
+				case 'textarea':
+
+					template = $('<textarea id="description" data-field="description" rows="15" placeholder="Explain the idea here…">' + value + '</textarea>');
+
+					break;
+			}
 		
+			element
+				.hide()
+				.before( template )
+		
+			template
+				.focus()
+				.one('blur', function(event){
+
+					var field = template.attr('data-field'),
+						value = template.val();
+
+					element
+						.html( template.val() )
+						.show();
+
+					template.remove();
+
+//					self.model.set({ field: value }); // BROKEN! out of scope
+				});			
+		}
+
 	});
 
 }) // define

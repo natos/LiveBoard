@@ -24,7 +24,6 @@ h1 {
 }
 
 button {
-	float: right;
 	background-color: #eeeeee;
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#cccccc));
 	/* Saf4+, Chrome */
@@ -82,51 +81,54 @@ button:active {
 	-webkit-transition-duration: .05s;
 }
 
-@-webkit-keyframes openCard {  
-
-	from {
-    	-webkit-transform: perspective(400px) rotateY(0deg);
-	}  
-
-	to {  
-		-webkit-transform: perspective(400px) rotateY(180deg) scale(5, 6);
-    }  
-} 
+@-webkit-keyframes new-card {
+        0%   { 
+        	opacity: 0; 
+        	-webkit-transform: scale(.1);
+        }
+        
+        100% { 
+        	opacity: 1; 
+        	-webkit-transform: scale(1);
+        }
+}
 
 .card {
 	width: 160px;
 	height: 110px;
 	background: #FFEE99;
 	border: .1em solid #FFDD33;
-	margin: .5em;
-	padding: .5em;
+	margin: 5px;
+	padding: 5px;
 	position: absolute;
+	overflow: hidden;
 
-	cursor: move;
-
+	cursor: pointer;
+	
 	-webkit-border-radius: 2px;
 	-moz-border-radius: 2px;
 	border-radius: 2px;
 
-	-webkit-box-shadow: 2px 2px 1px #DDD;
-	-moz-box-shadow: 2px 2px 1px #DDD;
-	box-shadow: 2px 2px 1px #DDD;
+	-webkit-box-shadow: 2px 2px 1px #CCC;
+	-moz-box-shadow: 2px 2px 1px #CCC;
+	box-shadow: 2px 2px 1px #CCC;
 
-	opacity: .8;
+	opacity: .7;
 
-	-webkit-transition: all .3s ease-out;
+	-webkit-transition: all .2s ease-out;
+    -webkit-animation: new-card .5s;
 }
 
-.card.focus {
-	width: 170px;
-	height: 120px;
+div.card.dragging {
 	
-	-webkit-box-shadow: -2px 2px -1px #CCC;
-/*	-moz-box-shadow: 3px 3px 2px #DDD;
-	box-shadow: 3px 3px 2px #DDD; */
+	-webkit-box-shadow: 2px 4px 2px #AAA;
+	-moz-box-shadow: 2px 4px 2px #AAA;
+	box-shadow: 2px 4px 2px #AAA;
 
-	-webkit-transition: all .1s ease-out;	
-	-webkit-transform: rotate(-3deg)!important;
+	-webkit-transition: all .2s ease-out;
+	-webkit-transform: scale(1.1)!important;
+	
+	cursor: move;
 }
 
 .card:hover, .card.focus {
@@ -137,7 +139,7 @@ button:active {
 .card.edit-mode {
 	opacity: .9;
 	cursor: default;
-	-webkit-transition: all .3s ease-out;
+	-webkit-transition: all .2s ease-out;
 }
 
 .card:hover .remove {
@@ -145,6 +147,9 @@ button:active {
 }
 
 .card .remove {
+	position: absolute;
+	right: 5px;
+	top: 5px;
 	font-size: .8em;
 	width: 1em;
 	height: 1em;
@@ -152,22 +157,47 @@ button:active {
 	padding: .8em 1.1em .8em .5em;
 	opacity: .7;
 	display: none;
+	-webkit-transition: all .2s ease-out;
 }
 
 .card .menu {
 	float: right;
 }
 
-textarea, input {
-	font-size: 2em;
-	border: .1em solid #FFDD33;
+.card h1 {
+	margin: 8px 0;
+}
+
+.edit-mode h1.editable, #title {
+	font-size: 3em;
+}
+
+.edit-mode .editable {
+	border: 1px transparent solid;
+	cursor: text;
+	padding: 5px;
 	width: 90%;
 }
 
-textarea:hover {
-
+.edit-mode .editable:hover {
+	border: 1px #ccc solid;
+	background: lightyellow;
+	opacity: .8;
 }
 
+.edit-mode p.editable, #description {
+	font-size: 1.5em;
+}
+
+#title {
+	margin: 5px 0;
+}
+
+#title, #description {
+	width: 90%;
+	opacity: .8;
+	cursor: default;
+}
 
 /**
 *	Layout
@@ -206,4 +236,14 @@ footer {
 	left: 0;
 	right: 0;
 	bottom: 20px; /* footer */
+	cursor: default;
+}
+
+#placeholder {
+	font-size: 4em;
+	position: absolute;
+	color: #DDD;
+	text-align: center;
+	width: 100%;
+	top: 200px;
 }
