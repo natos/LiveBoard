@@ -44,9 +44,9 @@ function(template, model, EditCardView) {
 		,	'mousemove'					: 'drag'
 		}
 
-,		initialize: function( position ) {
+,		initialize: function( position, id ) {
 
-			this.id = 'card' + o.id();
+			this.id = id || 'card' + o.id();
 
 			this.model = new model({
 				id: this.id
@@ -65,6 +65,8 @@ function(template, model, EditCardView) {
 			this.trigger('view-initialized', this);
 
 			this.render();
+
+			this.socketHandlers();
 
 		}
 
@@ -94,6 +96,13 @@ function(template, model, EditCardView) {
 
 		}
 
+
+,		socketHandlers: function() {
+
+
+
+		}
+
 /**
 *	Properties
 */
@@ -114,6 +123,7 @@ function(template, model, EditCardView) {
 
 ,		setRotation: function( rotation ) {
 			this.card[0].style.webkitTransform = 'rotate(' + this.getRotation() + 'deg)';
+			this.card[0].style.MozTransform = 'rotate(' + this.getRotation() + 'deg)';
 		}
 
 ,		focus: function() {
@@ -141,6 +151,8 @@ function(template, model, EditCardView) {
 			// avoid dragging things around on removing
 			event.stopPropagation && event.stopPropagation()
 
+			o.socket.emit('remove-card', this.id);
+
 		    this.card.undelegate('dblclick', 'editMode');
 			this.card.undelegate('mousedown', 'startDrag');
 			this.card.undelegate('mouseup', 'stopDrag');
@@ -149,6 +161,8 @@ function(template, model, EditCardView) {
 			this.card.undelegate('click button.remove', 'remove');
 
 			this.card[0].style.webkitTransform = 'scale(.3)';
+			this.card[0].style.MozTransform = 'scale(.3)';
+
 			this.card.fadeOut(200, function(){ $(this).remove() });
 
 		}
@@ -170,6 +184,10 @@ function(template, model, EditCardView) {
 			,	left: event.pageX - cardOffset.left
 			}
 
+			o.socket.emit('card-start-draggin', this.id, this._click);
+
+			return this;
+
 		}
 
 ,		stopDrag: function(event) {
@@ -184,6 +202,10 @@ function(template, model, EditCardView) {
 			
 			this.setRotation();
 
+			o.socket.emit('card-stop-draggin', this.id);
+
+			return this;
+
 		}
 
 ,		drag: function(event) {
@@ -193,6 +215,7 @@ function(template, model, EditCardView) {
 			if ( !this.dragStatus ) { return }
 
 			this.card.css('-webkit-transition','none');
+			this.card.css('-moz-transition','none');
 
 			var boardOffset = this.board.offset();
 
@@ -205,6 +228,8 @@ function(template, model, EditCardView) {
 				top: points.top + 'px'
 			,	left: points.left + 'px'
 			});
+
+			o.socket.emit('card-draggin', this.id, points);
 
 		}
 
@@ -284,6 +309,12 @@ function(template, model, EditCardView) {
 			this.setRotation();
 
 		} 
+
+/**
+*	Socket Event Handlers
+*/
+
+
 
 	});
 

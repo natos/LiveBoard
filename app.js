@@ -70,6 +70,29 @@ io.sockets.on('connection', function (socket) {
 		socket.broadcast.emit('clicked', { _id: _id, data: data, event: event, itemId: itemId });
 	});
 
+
+
+	socket.on('new-card-created', function(_click, _id) {
+		socket.broadcast.emit('new-card-created', _click, _id);
+	});
+
+	socket.on('remove-card', function(_id) {
+		socket.broadcast.emit('remove-card', _id);
+	});
+
+	socket.on('card-start-draggin', function(_id, _click){
+		socket.broadcast.emit('card-start-draggin', _id, _click);
+	});
+
+	socket.on('card-draggin', function(_id, points) {
+		socket.broadcast.emit('card-draggin', _id, points);
+	});
+
+	socket.on('card-stop-draggin', function(_id, _click){
+		socket.broadcast.emit('card-stop-draggin', _id);
+	});
+
+
 /**
 * End Socket
 */

@@ -6,9 +6,21 @@ var o = {
 	socket: io.connect('http://localhost')
 ,	events: _.extend({}, Backbone.Events)
 ,	pointers: {}
-,	cards: {}
+,	board: {}
 ,	'last-z-index': 0
 };
+
+/**
+ *	Cookies
+ */
+//	$.cookie('pointer',null);
+	
+	if ( $.cookie('pointer') ) {
+		o._id = $.cookie('pointer');
+	} else {
+		o._id = 'pointer' + Math.floor(Math.random()*16777215).toString(16);
+		$.cookie('pointer', o._id);
+	}
 
 /**
  *	Utils
