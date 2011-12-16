@@ -1,8 +1,9 @@
-var fs = require('fs'),
-	util   = require('util'),
-	express = require('express'),
-	io = require('socket.io'),
-	port = process.argv[2] || 8080;
+var fs = require('fs')
+,	util   = require('util')
+,	express = require('express')
+,	io = require('socket.io')
+,	port = process.env.PORT || 3000;
+
 
 /**
 * app & basic data
