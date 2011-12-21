@@ -3,7 +3,7 @@
 */
 
 var o = {
-	socket: io.connect('http://localhost')
+	socket: io.connect('http://liveboard.herokuapp.com')
 ,	events: _.extend({}, Backbone.Events)
 ,	pointers: {}
 ,	board: {}
