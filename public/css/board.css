@@ -145,10 +145,10 @@ div.card.dragging {
 	-moz-box-shadow: 2px 4px 2px #AAA;
 	box-shadow: 2px 4px 2px #AAA;
 
-	-webkit-transition: all .2s ease-out;
+	-webkit-transition: none; /* all .2s ease-out; */
 	-webkit-transform: scale(1.1)!important;
 	
-	-moz-transition: all .2s ease-out;
+	-moz-transition: none; /* all .2s ease-out; */
 	-moz-transform: scale(1.1)!important;
 
 	cursor: move;

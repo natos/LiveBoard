@@ -184,6 +184,9 @@ function(template, model, EditCardView) {
 			,	left: event.pageX - cardOffset.left
 			}
 
+			this.card[0].style.webkitTransform = '';
+			this.card[0].style.MozTransform = '';
+
 			o.socket.emit('card-start-draggin', this.id, this._click);
 
 			return this;
