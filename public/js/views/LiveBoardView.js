@@ -122,7 +122,10 @@ function(template, CardView, CardCollection) {
 			});
 
 			if (cardModel) {
-				card = cardModel.get('card').startDrag();
+				card = cardModel.get('card');
+				if (!card.editMode && !card.dragStatus) {
+					card.startDrag();
+				}
 			}
 
 		}

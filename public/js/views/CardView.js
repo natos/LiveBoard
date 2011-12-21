@@ -224,10 +224,8 @@ function(template, model, EditCardView) {
 			,	left: event.pageX - boardOffset.left - this._click.left
 			}
 
-			this.card.css({
-				top: points.top + 'px'
-			,	left: points.left + 'px'
-			});
+			this.card.css('top', points.top + 'px');
+			this.card.css('left', points.left + 'px');
 
 			o.socket.emit('card-draggin', this.id, points);
 
